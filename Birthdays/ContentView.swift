@@ -9,6 +9,15 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    
+    func deleteFriend(at offsets: IndexSet)
+    {
+        for index in offsets {
+            let friendToDelete = friends[index]
+            context.delete(friendToDelete)
+        }
+    }
+    //end function
     @Query private var friends: [Friend] = [
         Friend(name: "Elton Lin", birthday: .now),
         Friend(name: "Jenny Court", birthday: Date(timeIntervalSince1970: 0))
@@ -21,13 +30,19 @@ struct ContentView: View {
     //end array
     var body: some View {
         NavigationStack {
-            List(friends) { friend in
-                HStack {
-                    Text(friend.name)
-                    Spacer()
-                    Text(friend.birthday, format: .dateTime.month(.wide).day().year())
+            List {
+                ForEach(friends) { friend in
+                    HStack {
+                        HStack {
+                            Text(friend.name)
+                            Spacer()
+                            Text(friend.birthday, format: .dateTime.month(.wide).day().year())
+                        }
+                        //end hstack
+                    }
+                    //end hstack
                 }
-                //end hstack
+                .onDelete(perform: deleteFriend)
             }
             //end list
 
