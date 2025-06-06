@@ -25,6 +25,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @State private var newName = ""
     @State private var newBirthday = Date.now
+    @State private var selectedFriend: Friend?
 
     
     //end array
@@ -33,20 +34,24 @@ struct ContentView: View {
             List {
                 ForEach(friends) { friend in
                     HStack {
-                        HStack {
                             Text(friend.name)
                             Spacer()
                             Text(friend.birthday, format: .dateTime.month(.wide).day().year())
                         }
                         //end hstack
+                    .onTapGesture {
+                        selectedFriend = friend
                     }
-                    //end hstack
                 }
                 .onDelete(perform: deleteFriend)
             }
             //end list
-
             .navigationTitle("Birthdays")
+            .sheet(item: $selectedFriend) { friend in
+                NavigationStack {
+                    EditFriendView(friend: friend)
+                }
+            }
             .safeAreaInset(edge: .bottom) {
                 VStack(alignment: .center, spacing: 20) {
                         Text("New Birthday")
@@ -69,6 +74,7 @@ struct ContentView: View {
                 .padding()
                 .background(.bar)
             }
+            //end safenet
         }
         //end nav stack
     }
